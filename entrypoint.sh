@@ -12,6 +12,8 @@ for f in /etc/mail/accounts /etc/mail/domains; do
     fi
 done
 
+chown -R mail:mail /var/mail
+
 smtpd -n -f /etc/smtpd.conf
 
 exec smtpd -d -f /etc/smtpd.conf
