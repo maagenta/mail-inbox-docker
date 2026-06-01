@@ -29,6 +29,10 @@ RUN mkdir -p /var/mail /etc/mail && \
 COPY smtpd.conf   /etc/smtpd.conf
 COPY entrypoint.sh /entrypoint.sh
 
+# Copy initial accounts and domains
+COPY accounts.example   /etc/mail/accounts
+COPY domains.example    /etc/mail/domains
+
 RUN chmod 640 /etc/smtpd.conf && \
     chmod +x /entrypoint.sh
 
