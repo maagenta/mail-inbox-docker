@@ -1,0 +1,12 @@
+services:
+  mail:
+    build: .
+    container_name: opensmtpd
+    restart: unless-stopped
+    ports:
+      - "25:25"
+    volumes:
+      - ./mail-data:/var/mail          # inbox mail files
+      - ./mail-config:/etc/mail        # accounts and domains
+    cap_add:
+      - NET_BIND_SERVICE               # required to bind the port 25
