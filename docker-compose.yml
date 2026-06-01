@@ -1,7 +1,8 @@
 services:
   mail:
     build: .
-    container_name: opensmtpd
+    image: mail-inbox-img
+    container_name: mail-inbox
     restart: unless-stopped
     ports:
       - "25:25"
