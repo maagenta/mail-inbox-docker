@@ -15,16 +15,20 @@
 
 FROM alpine:3.20
 
-RUN apk add --no-cache opensmtpd
+# Recreate mail user/group with host UID/GID so bind mount files are accessible from host
+# -D no password, -H no home, -s shell
+ARG HOST_MAIL_UID=1000
+ARG HOST_MAIL_GID=1000
 
-# adduser mail:
-#  All email addresses use the same server user mail
-#  Explanation of coommand: -D no password, -H no home, -s shell
-RUN id mail 2>/dev/null || adduser -D -H -h /var/mail -s /sbin/nologin mail
+RUN deluser mail && \
+    delgroup mail && \
+    addgroup -g ${HOST_MAIL_GID} mail && \
+    adduser -D -H -u ${HOST_MAIL_UID} -G mail -s /sbin/nologin mail && \
+    apk add --no-cache opensmtpd
 
 RUN mkdir -p /var/mail /etc/mail && \
-    chown mail:mail /var/mail && \
-    chmod 755 /var/mail
+    chown mail:mail /var/mail /etc/mail && \
+    chmod 750 /var/mail /etc/mail
 
 COPY smtpd.conf   /etc/smtpd.conf
 COPY entrypoint.sh /entrypoint.sh

@@ -1,6 +1,10 @@
 services:
   mail:
-    build: .
+    build:
+      context: .
+      args:
+        - HOST_MAIL_UID=${HOST_MAIL_UID}
+        - HOST_MAIL_GID=${HOST_MAIL_GID}
     image: mail-inbox-img
     container_name: mail-inbox
     restart: unless-stopped
