@@ -20,8 +20,7 @@ FROM alpine:3.20
 ARG HOST_MAIL_UID=1000
 ARG HOST_MAIL_GID=1000
 
-RUN deluser mail && \
-    delgroup mail && \
+RUN deluser mail 2>/dev/null; \
     addgroup -g ${HOST_MAIL_GID} mail && \
     adduser -D -H -u ${HOST_MAIL_UID} -G mail -s /sbin/nologin mail && \
     apk add --no-cache opensmtpd
