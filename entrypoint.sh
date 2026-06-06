@@ -14,6 +14,6 @@ done
 
 chown -R mail:mail /var/mail
 
-smtpd -n -f /etc/smtpd.conf
+smtpd -n -f /etc/smtpd.conf || exit 1
 
 exec smtpd -d -f /etc/smtpd.conf

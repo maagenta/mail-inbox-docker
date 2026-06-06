@@ -32,13 +32,14 @@ RUN mkdir -p /var/mail /etc/mail && \
 
 COPY smtpd.conf   /etc/smtpd.conf
 COPY entrypoint.sh /entrypoint.sh
+COPY deliver.sh   /usr/local/bin/deliver.sh
 
 # Copy initial accounts and domains
 COPY accounts.example   /etc/mail-default/accounts
 COPY domains.example    /etc/mail-default/domains
 
 RUN chmod 640 /etc/smtpd.conf && \
-    chmod +x /entrypoint.sh
+    chmod +x /entrypoint.sh /usr/local/bin/deliver.sh
 
 # Standard SMTP Port
 EXPOSE 25

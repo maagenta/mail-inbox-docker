@@ -11,23 +11,24 @@
 #     /o)  (o/\ \_
 #     \_____/ /
 #       \____/
-noPrint="/dev/null"
-
-userMailExist="id mail"
-getMailUserId="id -u mail"
-getMailGroupId="id -g mail"
-
-if ! $userMailExist > noPrint ; then
+if ! id mail > /dev/null 2>&1 ; then
     echo "Error: User 'mail' doesn't exist."
     echo "Please create user 'mail'."
-fi
-if [ ! mailUserId="$getMailUserId" ]; then
-    echo "Error: Mail User Id couldn't be read."
-fi
-if [ ! mailGroupId="$getMailGroupId" ]; then
-    echo "Error: Mail Group Id couldn't be read."
+    exit 1
 fi
 
-export mailGroupId mailUserId
+HOST_MAIL_UID=$(id -u mail)
+HOST_MAIL_GID=$(id -g mail)
+
+if [ -z "$HOST_MAIL_UID" ]; then
+    echo "Error: Mail User Id couldn't be read."
+    exit 1
+fi
+if [ -z "$HOST_MAIL_GID" ]; then
+    echo "Error: Mail Group Id couldn't be read."
+    exit 1
+fi
+
+export HOST_MAIL_UID HOST_MAIL_GID
 
 docker compose up -d
