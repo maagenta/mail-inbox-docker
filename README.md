@@ -23,32 +23,38 @@ Receive-only — no IMAP, no POP, no outbound relay. Mail is stored in Maildir f
 
 ## How it works
 
-When an email arrives, OpenSMTPD checks whether the recipient domain is in the `domains` table and the address is in the `accounts` table. If both match, the message is written to:
+When an email arrives, OpenSMTPD checks whether the recipient domain is in the `domains` table and the address is in the `accounts` table. If both match, the message is handed off to `deliver.sh`, which creates the Maildir structure and writes the message to:
 
 ```
-/var/mail/<domain>/<user>/Maildir/
+/var/mail/<domain>/<user>/Maildir/new/
 ```
 
-All addresses map to the `mail` Unix user, which owns the Maildir files on disk.
+All addresses map to the `mail` Unix user, which owns the Maildir files on disk. The container's `mail` user is created with the same UID/GID as the host's `mail` user, so bind-mounted files are accessible from the host without permission issues.
 
 ---
 
 ## DNS records
 
-Before deploying, add these TXT records to your domain to block unauthorized senders from using it and protect its reputation:
+Before deploying, add these records to your domain to block unauthorized senders and protect its reputation:
 
-| Type | Name     | Value                                         |
-|------|----------|-----------------------------------------------|
-| TXT  | `@`      | `v=spf1 -all`                                 |
-| TXT  | `*`      | `v=spf1 -all`                                 |
-| TXT  | `_dmarc` | `v=DMARC1; p=reject; rua=mailto:you@domain`   |
-| MX   | `@`      | your server IP                                |
+| Type | Name     | Value                                       |
+|------|----------|---------------------------------------------|
+| MX   | `@`      | your server IP                              |
+| TXT  | `@`      | `v=spf1 -all`                               |
+| TXT  | `*`      | `v=spf1 -all`                               |
+| TXT  | `_dmarc` | `v=DMARC1; p=reject; rua=mailto:you@domain` |
 
 ---
 
 ## Quick start
 
-**1. Prepare your config directory:**
+**1. Create the host `mail` user** (if it doesn't exist):
+
+```sh
+sudo useradd -r -s /sbin/nologin mail
+```
+
+**2. Prepare your config directory:**
 
 ```sh
 mkdir mail-config
@@ -65,11 +71,15 @@ yourdomain.com
 EOF
 ```
 
-**2. Build and run:**
+**3. Build and run:**
 
 ```sh
-docker compose up -d
+./setup.sh
 ```
+
+`setup.sh` reads the UID/GID of the host `mail` user, exports them as `HOST_MAIL_UID` and `HOST_MAIL_GID`, and runs `docker compose up -d`. The image is built with those values so the container's `mail` user matches the host.
+
+> **Without a `mail-config/` mount**, the container falls back to the example accounts and domains baked into the image.
 
 ---
 
@@ -103,6 +113,8 @@ inbox-server-docker/
 ├── docker-compose.yml
 ├── smtpd.conf
 ├── entrypoint.sh
+├── deliver.sh
+├── setup.sh
 ├── accounts.example
 └── domains.example
 ```
@@ -112,7 +124,9 @@ inbox-server-docker/
 | `Dockerfile` | Alpine + OpenSMTPD image definition |
 | `docker-compose.yml` | Service, port, and volume configuration |
 | `smtpd.conf` | OpenSMTPD configuration (baked into image) |
-| `entrypoint.sh` | Validates config files and starts the daemon |
+| `entrypoint.sh` | Copies default config if absent, validates smtpd.conf, starts the daemon |
+| `deliver.sh` | MDA script — creates Maildir structure and writes incoming messages |
+| `setup.sh` | Reads host `mail` UID/GID and runs `docker compose up -d` |
 | `accounts.example` | Example virtual accounts table |
 | `domains.example` | Example accepted domains list |
 
@@ -120,7 +134,7 @@ inbox-server-docker/
 
 ## Volumes
 
-| Volume | Purpose |
-|--------|---------|
-| `/var/mail` | Persistent Maildir storage |
-| `/etc/mail` | Runtime config (`accounts` and `domains` files) |
+| Volume | Host path | Purpose |
+|--------|-----------|---------|
+| `/var/mail` | `./mail-data` | Persistent Maildir storage |
+| `/etc/mail` | `./mail-config` | Runtime config (`accounts` and `domains` files) |
