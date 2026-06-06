@@ -55,6 +55,9 @@ if [ ! -d "$mailFolder" ]; then
     exit 1
 fi
 
+# -- Text on top --
+printf "\033[1m---Available mail-boxes---\033[0m"
+
 # --- Build mailbox list ---
 tmpfile=$(mktemp)
 count=0
