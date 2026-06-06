@@ -69,7 +69,7 @@ for domain_path in "$mailFolder"/*/; do
         user=$(basename "$user_path")
 
         if [ $header_shown -eq 0 ]; then
-            printf "\n*%s:*\n" "\033[1m$domain\033[0m"
+            printf "\033[1m$domain\033[0m:\n"
             header_shown=1
         fi
 
