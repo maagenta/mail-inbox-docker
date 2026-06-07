@@ -95,6 +95,12 @@ Installs `mail.sh` as `/usr/local/bin/mail`, creates the sudoers rule, and adds 
 sudo ./configHostClient.sh --add-user <username>
 ```
 
+**To remove a user's access:**
+
+```sh
+sudo ./configHostClient.sh --del-user <username>
+```
+
 **To undo the configuration:**
 
 ```sh

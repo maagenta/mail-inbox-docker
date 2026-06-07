@@ -150,12 +150,63 @@ if [ "$1" = "--add-user" ]; then
     exit 0
 fi
 
+# --- --del-user <user> ---
+
+if [ "$1" = "--del-user" ]; then
+
+    target_user="$2"
+    if [ -z "$target_user" ]; then
+        printf "Error: --del-user requires a username.\n" >&2
+        exit 1
+    fi
+
+    _step "Checking superuser privileges"
+    if [ "$(id -u)" -ne 0 ]; then
+        fail "This script must be run as root or with sudo."
+        exit 1
+    fi
+    ok
+
+    _step "Checking if user '$target_user' exists"
+    if ! id "$target_user" > /dev/null 2>&1; then
+        fail "User '$target_user' not found"
+        exit 1
+    fi
+    ok
+
+    _step "Removing '$target_user' from mail group"
+    if output=$(gpasswd -d "$target_user" mail 2>&1); then
+        ok
+    else
+        fail "$output"
+        exit 1
+    fi
+
+    sudoers_file="/etc/sudoers.d/$target_user-mutt"
+
+    _step "Deleting $sudoers_file"
+    if [ ! -e "$sudoers_file" ]; then
+        fail "$sudoers_file not found"
+        exit 1
+    fi
+    if output=$(rm "$sudoers_file" 2>&1); then
+        ok
+    else
+        fail "$output"
+        exit 1
+    fi
+
+    printf "\nUser '%s' removed successfully.\n" "$target_user"
+    exit 0
+fi
+
 # --- No flag: print usage ---
 
 if [ -z "$1" ]; then
     printf "Please use one of these flags:\n"
     printf "  --apply-config   Applies config\n"
     printf "  --add-user       Adds a user to mail sudoers\n"
+    printf "  --del-user       Removes a user from mail sudoers\n"
     printf "  --revert-config  Reverts config\n"
     exit 0
 fi
