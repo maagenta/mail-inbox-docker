@@ -115,6 +115,8 @@ inbox-server-docker/
 ├── entrypoint.sh
 ├── deliver.sh
 ├── setup.sh
+├── mail.sh
+├── configHostClient.sh
 ├── accounts.example
 └── domains.example
 ```
@@ -127,6 +129,8 @@ inbox-server-docker/
 | `entrypoint.sh` | Copies default config if absent, validates smtpd.conf, starts the daemon |
 | `deliver.sh` | MDA script — creates Maildir structure and writes incoming messages |
 | `setup.sh` | Reads host `mail` UID/GID and runs `docker compose up -d` |
+| `mail.sh` | Interactive mailbox browser — lists and opens Maildir mailboxes with mutt |
+| `configHostClient.sh` | Configures the host client (installs `mail` command, sudoers rule) |
 | `accounts.example` | Example virtual accounts table |
 | `domains.example` | Example accepted domains list |
 
