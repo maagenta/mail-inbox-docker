@@ -84,7 +84,7 @@ EOF
 **4. Configure the host client:**
 
 ```sh
-sudo ./configHostClient.sh
+sudo ./configHostClient.sh --apply-config
 ```
 
 Installs `mail.sh` as `/usr/local/bin/mail`, creates the sudoers rule, and adds the current user to the `mail` group.

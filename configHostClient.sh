@@ -150,7 +150,22 @@ if [ "$1" = "--add-user" ]; then
     exit 0
 fi
 
-# --- Main flow ---
+# --- No flag: print usage ---
+
+if [ -z "$1" ]; then
+    printf "Please use one of these flags:\n"
+    printf "  --apply-config   Applies config\n"
+    printf "  --add-user       Adds a user to mail sudoers\n"
+    printf "  --revert-config  Reverts config\n"
+    exit 0
+fi
+
+# --- --apply-config ---
+
+if [ "$1" != "--apply-config" ]; then
+    printf "Unknown flag: %s\n" "$1" >&2
+    exit 1
+fi
 
 # Step 1: superuser privileges
 _step "Checking superuser privileges"
