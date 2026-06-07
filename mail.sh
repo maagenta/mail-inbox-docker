@@ -2,7 +2,7 @@
 
 # --- Configuration (override with flags below) ---
 mailFolder="./mail-data"
-mailCommand='mutt -f $directory'
+mailCommand='sudo -u mail mutt -f $directory'
 # -------------------------------------------------
 
 show_help() {
@@ -56,7 +56,7 @@ if [ ! -d "$mailFolder" ]; then
 fi
 
 # -- Text on top --
-printf "\033[1m---Available mail-boxes---\033[0m\n"
+printf "\n\033[1m---Available mail-boxes---\033[0m\n"
 
 # --- Build mailbox list ---
 tmpfile=$(mktemp)
