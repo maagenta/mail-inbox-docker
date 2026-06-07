@@ -81,6 +81,26 @@ EOF
 
 > **Without a `mail-config/` mount**, the container falls back to the example accounts and domains baked into the image.
 
+**4. Configure the host client:**
+
+```sh
+sudo ./configHostClient.sh
+```
+
+Installs `mail.sh` as `/usr/local/bin/mail`, creates the sudoers rule, and adds the current user to the `mail` group.
+
+**5. Grant access to additional users** (optional):
+
+```sh
+sudo ./configHostClient.sh --add-user <username>
+```
+
+**To undo the configuration:**
+
+```sh
+sudo ./configHostClient.sh --revert-config
+```
+
 ---
 
 ## Reading mail
@@ -130,7 +150,7 @@ inbox-server-docker/
 | `deliver.sh` | MDA script — creates Maildir structure and writes incoming messages |
 | `setup.sh` | Reads host `mail` UID/GID and runs `docker compose up -d` |
 | `mail.sh` | Interactive mailbox browser — lists and opens Maildir mailboxes with mutt |
-| `configHostClient.sh` | Configures the host client (installs `mail` command, sudoers rule) |
+| `configHostClient.sh` | Configures the host client (`--add-user`, `--revert-config`) |
 | `accounts.example` | Example virtual accounts table |
 | `domains.example` | Example accepted domains list |
 
