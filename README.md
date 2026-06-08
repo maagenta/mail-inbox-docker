@@ -128,13 +128,13 @@ With that flag, the script:
 
 | File | Purpose |
 |------|---------|
-| `Dockerfile` | Alpine + OpenSMTPD image definition |
-| `docker-compose.yml` | Service, port, and volume configuration |
-| `smtpd.conf` | OpenSMTPD configuration (baked into image) |
-| `entrypoint.sh` | Copies default config if absent, validates smtpd.conf, starts the daemon |
-| `deliver.sh` | MDA script — creates Maildir structure and writes incoming messages |
-| `setup.sh` | Reads host `mail` UID/GID and runs `docker compose up -d` |
-| `mail.sh` | Interactive mailbox browser — lists and opens Maildir mailboxes with mutt |
-| `configHostClient.sh` | Configures the host client (`--add-user`, `--revert-config`) |
-| `accounts.example` | Example virtual accounts table |
-| `domains.example` | Example accepted domains list |
+| _Dockerfile_ | Image definition |
+| _docker-compose.yml_ | Service, port, and volume configuration |
+| _smtpd.conf_ | OpenSMTPD configuration (baked into image) |
+| _entrypoint.sh_ | Copies default config if absent, validates smtpd.conf, starts the daemon |
+| _deliver.sh_ | Creates Maildir structure and writes incoming messages |
+| _setup.sh_ | Setup the container |
+| _mail.sh_ | Interactive mailbox browser |
+| _configHostClient.sh_ | Configures the host mail client |
+| _accounts.example_ | Example virtual accounts table |
+| _domains.example_ | Example accepted domains list |
