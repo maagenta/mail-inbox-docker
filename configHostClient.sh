@@ -337,4 +337,22 @@ else
     exit 1
 fi
 
+# Step 12: check /etc/Muttrc for 'set folder' collision
+_step "Checking /etc/Muttrc"
+if [ -e /etc/Muttrc ] && grep -q "set folder" /etc/Muttrc; then
+    warn
+    printf "Warning: Muttrc has a 'set folder' already, putting another one can make collitions. Please check the file '/etc/Muttrc'\n"
+    exit 1
+fi
+ok
+
+# Step 13: append 'set folder' to /etc/Muttrc
+_step "Appending 'set folder' to /etc/Muttrc"
+if printf "# Disable message warning that the user folder doesn't exist\nset folder=/dev/null\n" >> /etc/Muttrc 2>&1; then
+    ok
+else
+    fail
+    exit 1
+fi
+
 printf "\nAll done. Run 'mail' to browse your inbox.\n"
