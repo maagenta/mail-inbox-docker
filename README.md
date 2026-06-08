@@ -1,4 +1,4 @@
-# inbox-server-docker
+# mail-inbox-docker
 
 _Minimal Docker image for receiving email using [OpenSMTPD](https://www.opensmtpd.org/) on Alpine Linux._
 
@@ -25,14 +25,14 @@ mail-config/
 Just add a line with the domain in the domains file.
 
 ```
-echo 'example.com' > <mail-config>/domains
+echo 'example.com' >> <mail-config>/domains
 ```
 
 #### Adding an account
 Add a line with the account followed by `mail`.
 
 ```
-echo 'user@example.com   mail' > <mail-config>/accounts
+echo 'user@example.com   mail' >> <mail-config>/accounts
 ```
 
 #### Updating container tables
@@ -42,7 +42,7 @@ To update the container tables, restart it.
 docker restart <mail-inbox-docker-container>
 ```
 
- #### Mail storage
+#### Mail storage
  The mail is stored using the _Maildir_ standard in the container in the `/var/mail` volume which is by default bound to `./mail-data`. It follows the structure below.
  
  ```
@@ -90,6 +90,7 @@ All the steps to have a successful docker container have been written in the scr
 2. Check UID/GID and permissions of the `mail-data` folder if there are files there  
 3. Export them as `HOST_MAIL_UID` and `HOST_MAIL_GID`
 4. Run `docker compose up -d`
+
 The image is built with those values so the container's `mail` user matches the host.
 
 ---
